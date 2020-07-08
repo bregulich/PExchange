@@ -1,0 +1,5 @@
+include ':interfaceadapters'
+include ':usecases'
+include ':entities'
+include ':app'
+rootProject.name = "PExchange"
