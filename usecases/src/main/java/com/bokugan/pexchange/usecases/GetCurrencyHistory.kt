@@ -1,7 +1,7 @@
 package com.bokugan.pexchange.usecases
 
 import com.bokugan.pexchange.entities.Currency
-import com.bokugan.pexchange.entities.HistoricalCurrencyPair
+import com.bokugan.pexchange.entities.CurrencyPair
 import com.bokugan.pexchange.usecases.boundaries.CurrencySource
 import io.reactivex.Observable
 
@@ -13,8 +13,6 @@ class GetCurrencyHistory @Inject constructor(
     operator fun invoke(
         baseCurrency: Currency,
         quoteCurrency: Currency
-    ): Observable<Result<List<HistoricalCurrencyPair>>> =
-        currencySource
-            .getCurrencyHistory(baseCurrency, quoteCurrency)
-            .map { Success(it) }
+    ): Observable<out Result<List<CurrencyPair>>> =
+        currencySource.getCurrencyHistory(baseCurrency, quoteCurrency)
 }

@@ -1,4 +1,7 @@
-package com.bokugan.pexchange.entities
+package com.bokugan.pexchange.interfaceadapters.repositories
+
+import com.bokugan.pexchange.entities.Currency
+import com.bokugan.pexchange.entities.CurrencyPair
 
 data class HistoricalCurrencyPair(
     override val baseCurrency: Currency,

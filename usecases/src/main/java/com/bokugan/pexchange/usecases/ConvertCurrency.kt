@@ -9,7 +9,6 @@ import javax.inject.Inject
 class ConvertCurrency @Inject constructor(
     private val currencySource: CurrencySource
 ) {
-
     operator fun invoke(
         baseCurrency: Currency,
         quoteCurrency: Currency,
@@ -17,5 +16,11 @@ class ConvertCurrency @Inject constructor(
     ): Observable<Result<Double>> =
         currencySource
             .getCurrencyPair(baseCurrency, quoteCurrency)
-            .map { Success(it.baseToQuoteCurrency(amount)) }
+            .map {
+                if (it is Success) {
+                    Success(it.data.baseToQuoteCurrency(amount))
+                } else {
+                    Failure()
+                }
+            }
 }
