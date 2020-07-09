@@ -16,11 +16,13 @@ open class CurrencyPair(
         1 / buy
     )
 
+    // IMPORTANT. May lose some precision during conversion or i did something wrong x_x
     fun tryCreateCrossCurrency(other: CurrencyPair) =
         CurrencyPair.tryCreateCrossCurrency(this, other)
 
     companion object {
 
+        // IMPORTANT. May lose some precision during conversion or i did something wrong x_x
         fun tryCreateCrossCurrency(left: CurrencyPair, right: CurrencyPair): CurrencyPair? {
             val commonCcy = getCommonCurrency(left, right) ?: return null
 
