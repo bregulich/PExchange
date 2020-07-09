@@ -6,8 +6,8 @@ open class CurrencyPair(
     open val buy: Double,
     open val sell: Double
 ) {
-    fun baseToQuoteCurrency(amount: Double) = amount / sell
-    fun quoteToBaseCurrency(amount: Double) = amount * buy
+    fun baseToQuoteCurrency(amount: Double) = amount * buy
+    fun quoteToBaseCurrency(amount: Double) = amount / sell
 
     fun createInverted() = CurrencyPair(
         quoteCurrency,
@@ -16,35 +16,35 @@ open class CurrencyPair(
         1 / buy
     )
 
-    fun tryCreateFromCrossCurrency(other: CurrencyPair) =
-        CurrencyPair.tryCreateFromCrossCurrency(this, other)
+    fun tryCreateCrossCurrency(other: CurrencyPair) =
+        CurrencyPair.tryCreateCrossCurrency(this, other)
 
     companion object {
 
-        fun tryCreateFromCrossCurrency(left: CurrencyPair, right: CurrencyPair): CurrencyPair? {
-            val commonCurrencies = getCommonCurrencies(left, right)
-            if (commonCurrencies.size != 1) {
-                return null
-            }
+        fun tryCreateCrossCurrency(left: CurrencyPair, right: CurrencyPair): CurrencyPair? {
+            val commonCcy = getCommonCurrency(left, right) ?: return null
 
-            val commonCcy = commonCurrencies.first()
             val newLeft = if (left.baseCurrency == commonCcy) left.createInverted() else left
             val newRight = if (right.baseCurrency == commonCcy) right.createInverted() else right
 
             return CurrencyPair(
                 newLeft.baseCurrency,
-                newRight.quoteCurrency,
+                newRight.baseCurrency,
                 newLeft.buy,
                 newRight.sell
             )
         }
 
-        private fun getCommonCurrencies(left: CurrencyPair, right: CurrencyPair) =
-            setOf(
+        private fun getCommonCurrency(left: CurrencyPair, right: CurrencyPair) =
+            listOf(
                 left.baseCurrency,
                 left.quoteCurrency,
                 right.baseCurrency,
                 right.quoteCurrency
             )
+                .groupBy { it }
+                .filterValues { it.size == 2 }
+                .values.firstOrNull()?.firstOrNull()
+
     }
 }
