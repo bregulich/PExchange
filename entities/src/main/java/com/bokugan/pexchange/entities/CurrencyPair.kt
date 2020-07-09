@@ -25,13 +25,13 @@ open class CurrencyPair(
             val commonCcy = getCommonCurrency(left, right) ?: return null
 
             val newLeft = if (left.baseCurrency == commonCcy) left.createInverted() else left
-            val newRight = if (right.baseCurrency == commonCcy) right.createInverted() else right
+            val newRight = if (right.quoteCurrency == commonCcy) right.createInverted() else right
 
             return CurrencyPair(
                 newLeft.baseCurrency,
-                newRight.baseCurrency,
-                newLeft.buy,
-                newRight.sell
+                newRight.quoteCurrency,
+                newLeft.buy * newRight.buy,
+                newLeft.sell * newRight.sell
             )
         }
 
