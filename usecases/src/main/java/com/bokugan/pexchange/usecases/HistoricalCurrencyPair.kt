@@ -1,4 +1,4 @@
-package com.bokugan.pexchange.interfaceadapters.repositories
+package com.bokugan.pexchange.usecases
 
 import com.bokugan.pexchange.entities.Currency
 import com.bokugan.pexchange.entities.CurrencyPair
