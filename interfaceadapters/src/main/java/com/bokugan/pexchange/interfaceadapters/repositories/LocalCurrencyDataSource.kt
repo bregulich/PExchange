@@ -1,4 +1,4 @@
-package com.bokugan.pexchange.interfaceadapters.repositories.datasources
+package com.bokugan.pexchange.interfaceadapters.repositories
 
 import com.bokugan.pexchange.usecases.Result as Result
 

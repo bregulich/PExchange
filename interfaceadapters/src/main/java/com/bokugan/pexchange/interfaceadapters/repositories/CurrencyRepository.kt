@@ -1,8 +1,6 @@
 package com.bokugan.pexchange.interfaceadapters.repositories
 
 import com.bokugan.pexchange.entities.Currency
-import com.bokugan.pexchange.interfaceadapters.repositories.datasources.LocalCurrencyDataSource
-import com.bokugan.pexchange.interfaceadapters.repositories.datasources.RemoteCurrencyDataSource
 import com.bokugan.pexchange.usecases.Empty
 
 import com.bokugan.pexchange.usecases.Success
