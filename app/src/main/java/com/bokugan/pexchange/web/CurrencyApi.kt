@@ -6,5 +6,5 @@ import retrofit2.http.GET
 
 interface CurrencyApi {
     @GET("exchange&json&coursid=11")
-    fun getCurrencyRates(): Single<Response<List<JsonCurrencyPair>>>
+    fun getCurrencyRates(): Single<Response<List<CurrencyPairWeb>>>
 }

@@ -2,10 +2,11 @@ package com.bokugan.pexchange.db
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.bokugan.pexchange.entities.Currency
 
-@Entity(tableName = "currency_pairs")
+@Entity(tableName = "currency_pairs", indices = [Index("created_utc")])
 data class CurrencyPairDBItem(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

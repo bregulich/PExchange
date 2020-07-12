@@ -5,7 +5,7 @@ import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
 import com.squareup.moshi.Json
 import java.lang.Exception
 
-data class JsonCurrencyPair(
+data class CurrencyPairWeb(
     @field:Json(name = "ccy") val baseCurrency: String,
     // Api has some misconceptions about base and quote currency.
     @field:Json(name = "base_ccy") val quoteCurrency: String,
@@ -13,7 +13,7 @@ data class JsonCurrencyPair(
     @field:Json(name = "sale") val sell: Double
 )
 
-fun JsonCurrencyPair.toHistoricalCurrencyPair(timeCreatedUTC: Long) =
+fun CurrencyPairWeb.toHistoricalCurrencyPair(timeCreatedUTC: Long) =
     HistoricalCurrencyPair(
         baseCurrency.toCurrency(),
         quoteCurrency.toCurrency(),
