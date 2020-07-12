@@ -8,5 +8,5 @@ data class HistoricalCurrencyPair(
     override val quoteCurrency: Currency,
     override val buy: Double,
     override val sell: Double,
-    val longCreatedUTC: Long
+    val createdUTC: Long
 ) : CurrencyPair(baseCurrency, quoteCurrency, buy, sell)
