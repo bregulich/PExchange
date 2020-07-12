@@ -4,7 +4,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.bokugan.pexchange.entities.Currency
 import com.bokugan.pexchange.usecases.*
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.PublishSubject
@@ -21,42 +20,46 @@ class CurrencyHistoryViewModel @ViewModelInject constructor(
     private val getCurrencyHistory: GetCurrencyHistory
 ) : ViewModel() {
 
-    private val _currencyHistory = MutableLiveData<List<HistoricalCurrencyPair>>(null)
+    private val _currencyHistory = MutableLiveData<List<HistoricalCurrencyPair>>(emptyList())
     val currencyHistory: LiveData<List<HistoricalCurrencyPair>> = _currencyHistory
 
-    val baseCurrency = MutableLiveData(Currency.USD)
-    val quoteCurrency = MutableLiveData(Currency.UAH)
+    // TODO. Should be set by the use case, but i'm too lazy.
+    val latestCurrencyPair = Transformations.map(currencyHistory) { it?.firstOrNull() }
 
-    private val mediator = MediatorLiveData<Nothing>()
-        .apply {
-            addSource(baseCurrency) { updateCurrencyHistory() }
-            addSource(quoteCurrency) { updateCurrencyHistory() }
-        }
+    private val currencyHistoryRequestSubject =
+        PublishSubject.create<CurrencyHistoryRequest>()
 
     private val compositeDisposable = CompositeDisposable().also {
         it += createCurrencyHistoryUpdateStream()
     }
 
-    private val currencyHistoryRequestSubject =
-        PublishSubject.create<CurrencyHistoryRequest>()
-
     private fun createCurrencyHistoryUpdateStream() =
         currencyHistoryRequestSubject
             .debounce(DEBOUNCE, TimeUnit.MILLISECONDS)
             .switchMap { (bccy, qccy) -> getCurrencyHistory(bccy, qccy) }
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                _currencyHistory.value =
-                    if (it is Success) it.data else null
+                _currencyHistory.postValue(
+                    if (it is Success) it.data else emptyList()
+                )
             }
 
-    private fun updateCurrencyHistory() {
+    private var baseCurrency = Currency.USD
+    private var quoteCurrency = Currency.UAH
+
+    private fun updateCurrencyHistory(
+        baseCurrency: Currency? = null,
+        quoteCurrency: Currency? = null
+    ) {
+        this.baseCurrency = baseCurrency ?: this.baseCurrency
+        this.quoteCurrency = quoteCurrency ?: this.quoteCurrency
+
         currencyHistoryRequestSubject.onNext(
-            CurrencyHistoryRequest(
-                baseCurrency.value!!,
-                quoteCurrency.value!!
-            )
+            CurrencyHistoryRequest(this.baseCurrency, this.quoteCurrency)
         )
+    }
+
+    init {
+        updateCurrencyHistory()
     }
 
     override fun onCleared() {

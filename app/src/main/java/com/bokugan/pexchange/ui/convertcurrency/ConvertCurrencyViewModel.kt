@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import com.bokugan.pexchange.entities.Currency
 import com.bokugan.pexchange.usecases.ConvertCurrency
 import com.bokugan.pexchange.usecases.Success
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import io.reactivex.subjects.PublishSubject
@@ -40,12 +39,12 @@ class ConvertCurrencyViewModel @ViewModelInject constructor(
             addSource(amount) { requestCurrencyConversion() }
         }
 
+    private val convertCurrencySubject =
+        PublishSubject.create<ConvertCurrencyRequest>()
+
     private val compositeDisposable = CompositeDisposable().also {
         it += createCurrencyConversionStream()
     }
-
-    private val convertCurrencySubject =
-        PublishSubject.create<ConvertCurrencyRequest>()
 
     private fun createCurrencyConversionStream() =
         convertCurrencySubject
@@ -53,9 +52,10 @@ class ConvertCurrencyViewModel @ViewModelInject constructor(
             .switchMap { (bccy, qcyy, amount) ->
                 convertCurrency(bccy, qcyy, amount)
             }
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe {
-                _quoteAmount.value = if (it is Success) it.data else 0.0
+                _quoteAmount.postValue(
+                    if (it is Success) it.data else 0.0
+                )
             }
 
     private fun requestCurrencyConversion() {

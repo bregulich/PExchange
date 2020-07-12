@@ -28,9 +28,13 @@ class RemoteCurrencyDataSourceImpl @Inject constructor(
                 }
             }
             .flatMapObservable { it.toObservable() }
+            .filter {
+                it.baseCurrency.canConvertToCurrency &&
+                        it.quoteCurrency.canConvertToCurrency
+            }
             .map {
                 it.toHistoricalCurrencyPair(
-                    Calendar.getInstance().timeInMillis
+                    Calendar.getInstance(TimeZone.getTimeZone("UTC")).timeInMillis
                 )
             }
             .toList()
@@ -39,8 +43,8 @@ class RemoteCurrencyDataSourceImpl @Inject constructor(
 
 private fun CurrencyPairWeb.toHistoricalCurrencyPair(timeCreatedUTC: Long) =
     HistoricalCurrencyPair(
-        baseCurrency.toCurrency(),
-        quoteCurrency.toCurrency(),
+        baseCurrency.toCurrency() ?: throw Error("Unexpected parsing error"),
+        quoteCurrency.toCurrency() ?: throw Error("Unexpected parsing error"),
         buy,
         sell,
         timeCreatedUTC
@@ -51,5 +55,7 @@ private fun String.toCurrency() = when (this) {
     "USD" -> Currency.USD
     "EUR" -> Currency.EUR
     "RUR" -> Currency.RUB
-    else -> throw Exception("Can't parse currency from string: $this")
+    else -> null
 }
+
+private val String.canConvertToCurrency get() = toCurrency() != null
