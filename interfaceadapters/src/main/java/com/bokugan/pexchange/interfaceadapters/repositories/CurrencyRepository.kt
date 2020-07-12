@@ -8,7 +8,6 @@ import com.bokugan.pexchange.usecases.Success
 import com.bokugan.pexchange.usecases.boundaries.CurrencySource
 
 import io.reactivex.Single
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 class CurrencyRepository @Inject constructor(
@@ -16,10 +15,10 @@ class CurrencyRepository @Inject constructor(
     private val localDataSource: LocalCurrencyDataSource
 ) : CurrencySource {
 
+    // TODO.
     override fun getCurrencyHistory(baseCurrency: Currency, quoteCurrency: Currency) =
         remoteDataSource
             .fetch()
-            .subscribeOn(Schedulers.io())
             .doOnSuccess {
                 if (it is Success) localDataSource.addItems(it.data)
             }
@@ -31,3 +30,4 @@ class CurrencyRepository @Inject constructor(
     override fun getCurrencyPair(baseCurrency: Currency, quoteCurrency: Currency) =
         localDataSource.getLatestItem(baseCurrency, quoteCurrency)
 }
+

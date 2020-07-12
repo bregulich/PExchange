@@ -8,12 +8,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object DBModule {
 
+    @DatabaseName
     @Provides
     fun provideDBName() = "pexchange"
 
@@ -21,10 +23,14 @@ object DBModule {
     @Singleton
     fun provideDB(
         @ApplicationContext context: Context,
-        dbName: String
+        @DatabaseName dbName: String
     ) = Room.databaseBuilder(context, Database::class.java, dbName).build()
 
     @Provides
     @Singleton
     fun provideCurrencyPairDao(db: Database) = db.currencyPairDao()
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class DatabaseName

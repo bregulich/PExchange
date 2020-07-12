@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 
 @Database(entities = [CurrencyPairDBItem::class], version = 1, exportSchema = false)
-@TypeConverters(TypeConverters::class)
+@TypeConverters(Converters::class)
 abstract class Database: RoomDatabase() {
     abstract fun currencyPairDao(): CurrencyPairDao
 }

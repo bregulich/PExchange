@@ -38,5 +38,5 @@ interface CurrencyPairDao {
     fun getItemsInHistoricalOrder(
         baseCurrency: Currency,
         quoteCurrency: Currency
-    ): Observable<CurrencyPairDBItem>
+    ): Observable<List<CurrencyPairDBItem>>
 }

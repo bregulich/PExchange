@@ -9,12 +9,14 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(ApplicationComponent::class)
 object WebModule {
 
+    @ApiBaseUrl
     @Provides
     fun provideBaseUrl() = "https://api.privatbank.ua/p24api/"
 
@@ -24,7 +26,7 @@ object WebModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(okHttpClient: OkHttpClient, baseUrl: String) =
+    fun provideRetrofit(okHttpClient: OkHttpClient, @ApiBaseUrl baseUrl: String) =
         Retrofit.Builder()
             .addConverterFactory(MoshiConverterFactory.create())
             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -36,3 +38,7 @@ object WebModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit) = retrofit.create(CurrencyApi::class.java)
 }
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class ApiBaseUrl

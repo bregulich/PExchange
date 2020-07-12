@@ -3,7 +3,7 @@ package com.bokugan.pexchange.db
 import androidx.room.TypeConverter
 import com.bokugan.pexchange.entities.Currency
 
-class TypeConverters {
+class Converters {
 
     @TypeConverter
     fun Currency.toCode() = this.code
