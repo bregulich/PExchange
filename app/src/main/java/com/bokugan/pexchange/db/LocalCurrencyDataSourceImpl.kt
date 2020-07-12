@@ -36,11 +36,8 @@ class LocalCurrencyDataSourceImpl @Inject constructor(
     ): Observable<out Result<List<HistoricalCurrencyPair>>> =
         currencyPairDao.getItemsInHistoricalOrder(baseCurrency, quoteCurrency)
             .subscribeOn(Schedulers.io())
-            .switchMap { it.toObservable() }
-            .map { it.toHistoricalCurrencyPair() }
-            .toList()
+            .map { items -> items.map { it.toHistoricalCurrencyPair() } }
             .map { Success(it) }
-            .toObservable()
 }
 
 private fun HistoricalCurrencyPair.toCurrencyPairDBItem() = CurrencyPairDBItem(

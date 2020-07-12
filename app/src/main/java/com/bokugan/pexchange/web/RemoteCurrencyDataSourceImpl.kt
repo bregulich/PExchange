@@ -9,7 +9,7 @@ import com.bokugan.pexchange.usecases.Success
 
 import io.reactivex.rxkotlin.toObservable
 import io.reactivex.schedulers.Schedulers
-import java.lang.Exception
+
 import java.util.*
 import javax.inject.Inject
 

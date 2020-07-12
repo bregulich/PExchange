@@ -32,7 +32,7 @@ interface CurrencyPairDao {
             SELECT * FROM currency_pairs
             WHERE base_currency == :baseCurrency 
             AND quote_currency == :quoteCurrency
-            ORDER BY created_utc
+            ORDER BY created_utc DESC
         """
     )
     fun getItemsInHistoricalOrder(

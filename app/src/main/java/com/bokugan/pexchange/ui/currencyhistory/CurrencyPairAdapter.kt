@@ -50,13 +50,10 @@ class CurrencyPairViewHolder(private val binding: CurrencyPairItemBinding) :
     }
 
     companion object {
-        private var formatter = getDateTimeInstance()
+        private val formatter = getDateTimeInstance()
 
         private fun HistoricalCurrencyPair.toLocalDateTime() =
-            formatter.format(
-                Calendar.getInstance(TimeZone.getTimeZone("UTC")).apply {
-                    timeInMillis = createdUTC
-                })
+            formatter.format(Date(createdUTC))
 
         private fun HistoricalCurrencyPair.baseQuote() = "$baseCurrency/$quoteCurrency"
 
