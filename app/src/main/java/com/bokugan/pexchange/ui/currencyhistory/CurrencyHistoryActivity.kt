@@ -1,6 +1,7 @@
 package com.bokugan.pexchange.ui.currencyhistory
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
@@ -32,6 +33,8 @@ class CurrencyHistoryActivity : AppCompatActivity() {
 
         setSupportActionBar(binding.toolbar)
 
+        binding.toolbar.inflateMenu(R.menu.currency)
+
         currencyPairAdapter = CurrencyPairAdapter()
 
         binding.recyclerView.apply {
@@ -48,6 +51,11 @@ class CurrencyHistoryActivity : AppCompatActivity() {
         vm.latestCurrencyPair.observe(this) {
             updateToolbarTitle(it)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.currency, menu)
+        return true
     }
 
     private fun updateChart(list: List<HistoricalCurrencyPair>) {
