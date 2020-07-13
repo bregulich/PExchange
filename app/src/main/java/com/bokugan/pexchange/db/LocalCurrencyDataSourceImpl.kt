@@ -1,6 +1,7 @@
 package com.bokugan.pexchange.db
 
 import com.bokugan.pexchange.entities.Currency
+import com.bokugan.pexchange.entities.CurrencyPair
 import com.bokugan.pexchange.interfaceadapters.repositories.LocalCurrencyDataSource
 import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
 import com.bokugan.pexchange.usecases.Result
@@ -28,7 +29,12 @@ class LocalCurrencyDataSourceImpl @Inject constructor(
     ): Observable<out Result<HistoricalCurrencyPair>> =
         currencyPairDao.getLatestItem(baseCurrency, quoteCurrency)
             .subscribeOn(Schedulers.io())
-            .map { Success(it.toHistoricalCurrencyPair()) }
+            .map {
+                Success(
+                    it.toHistoricalCurrencyPair()
+                        .invertIfNecessary(baseCurrency, quoteCurrency)
+                )
+            }
 
     override fun getItemsInHistoricalOrder(
         baseCurrency: Currency,
@@ -36,9 +42,38 @@ class LocalCurrencyDataSourceImpl @Inject constructor(
     ): Observable<out Result<List<HistoricalCurrencyPair>>> =
         currencyPairDao.getItemsInHistoricalOrder(baseCurrency, quoteCurrency)
             .subscribeOn(Schedulers.io())
-            .map { items -> items.map { it.toHistoricalCurrencyPair() } }
+            .map { items ->
+                items.map {
+                    it.toHistoricalCurrencyPair()
+                        .invertIfNecessary(baseCurrency, quoteCurrency)
+                }
+            }
             .map { Success(it) }
 }
+
+// TODO. This might not be a correct place for such logic.
+//  It is supposed to be somewhere in the repository or even the use case layer.
+//  It is quite useful here though: we have a very clean repo api for use case this way.
+//  On the other hand, there's quite of business/app logic leaking to the framework layer.
+//  So i'm still on the fence...
+private fun HistoricalCurrencyPair.invertIfNecessary(
+    baseCurrency: Currency,
+    quoteCurrency: Currency
+) =
+    if (this.baseCurrency == baseCurrency && this.quoteCurrency == quoteCurrency) {
+        this
+    } else {
+        createInverted().toHistoricalCurrencyPair(createdUTC)
+    }
+
+// TODO. Override in HistoricalCurrencyPair. No? Yes?
+private fun CurrencyPair.toHistoricalCurrencyPair(createdUtc: Long) = HistoricalCurrencyPair(
+    baseCurrency,
+    quoteCurrency,
+    buy,
+    sell,
+    createdUtc
+)
 
 private fun HistoricalCurrencyPair.toCurrencyPairDBItem() = CurrencyPairDBItem(
     baseCurrency = baseCurrency,
@@ -49,9 +84,9 @@ private fun HistoricalCurrencyPair.toCurrencyPairDBItem() = CurrencyPairDBItem(
 )
 
 private fun CurrencyPairDBItem.toHistoricalCurrencyPair() = HistoricalCurrencyPair(
-    baseCurrency = baseCurrency,
-    quoteCurrency = quoteCurrency,
-    buy = buy,
-    sell = sell,
-    createdUTC = createdUTC
+    baseCurrency,
+    quoteCurrency,
+    buy,
+    sell,
+    createdUTC
 )

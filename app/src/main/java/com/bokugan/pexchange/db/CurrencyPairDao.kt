@@ -16,8 +16,10 @@ interface CurrencyPairDao {
     @Query(
         """
             SELECT * FROM currency_pairs 
-            WHERE base_currency == :baseCurrency 
-            AND quote_currency == :quoteCurrency
+            WHERE 
+                    (base_currency == :baseCurrency AND quote_currency == :quoteCurrency) 
+                OR 
+                    (base_currency == :quoteCurrency AND quote_currency == :baseCurrency)
             ORDER BY created_utc
             LIMIT 1
         """
@@ -30,8 +32,10 @@ interface CurrencyPairDao {
     @Query(
         """
             SELECT * FROM currency_pairs
-            WHERE base_currency == :baseCurrency 
-            AND quote_currency == :quoteCurrency
+            WHERE 
+                    (base_currency == :baseCurrency AND quote_currency == :quoteCurrency) 
+                OR 
+                    (base_currency == :quoteCurrency AND quote_currency == :baseCurrency) 
             ORDER BY created_utc DESC
         """
     )

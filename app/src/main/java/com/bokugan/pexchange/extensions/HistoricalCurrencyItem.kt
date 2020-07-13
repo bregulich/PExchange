@@ -16,4 +16,4 @@ val HistoricalCurrencyPair.baseQuote
 
 val HistoricalCurrencyPair.buySell
     get() =
-        "${buy.round()}/${sell.round()}"
+        "${buy.round(4)}/${sell.round(4)}"
