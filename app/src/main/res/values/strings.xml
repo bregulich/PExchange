@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">PExchange</string>
     <string name="n_a">n/a</string>
-    <string name="pick_currencies">pick currencies</string>
+    <string name="pick_currencies">Pick currencies</string>
+    <string name="ok">OK</string>
+
 </resources>
