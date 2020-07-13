@@ -27,7 +27,7 @@ class CurrencyRepository @Inject constructor(
 ) : CurrencySource, Updatable {
 
     init {
-        //updater.delegateUpdates(this)
+        updater.delegateUpdates(this)
     }
 
     override fun update() =
