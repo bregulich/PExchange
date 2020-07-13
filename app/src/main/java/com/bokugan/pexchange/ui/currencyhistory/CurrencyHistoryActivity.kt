@@ -2,22 +2,27 @@ package com.bokugan.pexchange.ui.currencyhistory
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bokugan.pexchange.R
 import com.bokugan.pexchange.databinding.ActivityCurrencyHistoryBinding
+import com.bokugan.pexchange.entities.Currency
 import com.bokugan.pexchange.extensions.baseQuote
 import com.bokugan.pexchange.extensions.buySell
+import com.bokugan.pexchange.ui.CurrencyPairPickerDialogFragment
+import com.bokugan.pexchange.ui.CurrencyPickerCallback
 import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.hilt.android.AndroidEntryPoint
+import com.bokugan.pexchange.extensions.observeEvent
 
 
 @AndroidEntryPoint
-class CurrencyHistoryActivity : AppCompatActivity() {
+class CurrencyHistoryActivity : AppCompatActivity(), CurrencyPickerCallback {
 
     private val vm by viewModels<CurrencyHistoryViewModel>()
 
@@ -51,11 +56,26 @@ class CurrencyHistoryActivity : AppCompatActivity() {
         vm.latestCurrencyPair.observe(this) {
             updateToolbarTitle(it)
         }
+
+        vm.pickCurrencyPairRequest.observeEvent(this) {
+            CurrencyPairPickerDialogFragment.create(
+                supportFragmentManager,
+                it.baseCurrency,
+                it.quoteCurrency
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.currency, menu)
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.pick_currencies -> vm.requestNewCurrencyPair()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun updateChart(list: List<HistoricalCurrencyPair>) {
@@ -83,5 +103,9 @@ class CurrencyHistoryActivity : AppCompatActivity() {
             } else {
                 "${currencyPair.baseQuote} ${currencyPair.buySell}"
             }
+    }
+
+    override fun onNewCurrencyPair(baseCurrency: Currency, quoteCurrency: Currency) {
+        vm.updateCurrencyHistory(baseCurrency, quoteCurrency)
     }
 }

@@ -1,5 +1,6 @@
 package com.bokugan.pexchange.ui.currencyhistory
 
+import com.bokugan.pexchange.extensions.Event
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.*
 import com.bokugan.pexchange.entities.Currency
@@ -12,7 +13,7 @@ import java.util.concurrent.TimeUnit
 
 private const val DEBOUNCE = 500L
 
-private data class CurrencyHistoryRequest(
+data class CurrencyHistoryRequest(
     val baseCurrency: Currency,
     val quoteCurrency: Currency
 )
@@ -47,7 +48,7 @@ class CurrencyHistoryViewModel @ViewModelInject constructor(
     private var baseCurrency = Currency.USD
     private var quoteCurrency = Currency.UAH
 
-    private fun updateCurrencyHistory(
+    fun updateCurrencyHistory(
         baseCurrency: Currency? = null,
         quoteCurrency: Currency? = null
     ) {
@@ -56,6 +57,18 @@ class CurrencyHistoryViewModel @ViewModelInject constructor(
 
         currencyHistoryRequestSubject.onNext(
             CurrencyHistoryRequest(this.baseCurrency, this.quoteCurrency)
+        )
+    }
+
+    private val _pickCurrencyPairRequest =
+        MutableLiveData<Event<CurrencyHistoryRequest>>(null)
+
+    val pickCurrencyPairRequest: LiveData<Event<CurrencyHistoryRequest>> =
+        _pickCurrencyPairRequest
+
+    fun requestNewCurrencyPair() {
+        _pickCurrencyPairRequest.value = Event(
+            CurrencyHistoryRequest(baseCurrency, quoteCurrency)
         )
     }
 

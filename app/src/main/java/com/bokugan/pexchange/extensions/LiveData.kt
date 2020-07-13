@@ -1,3 +1,5 @@
+package com.bokugan.pexchange.extensions
+
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
