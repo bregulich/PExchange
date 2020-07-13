@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.bokugan.pexchange.entities.Currency
+import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
 
 @Entity(tableName = "currency_pairs", indices = [Index("created_utc")])
 data class CurrencyPairDBItem(
@@ -25,4 +26,12 @@ data class CurrencyPairDBItem(
 
     @ColumnInfo(name = "created_utc")
     val createdUTC: Long
+)
+
+fun CurrencyPairDBItem.toHistoricalCurrencyPair() = HistoricalCurrencyPair(
+    baseCurrency,
+    quoteCurrency,
+    buy,
+    sell,
+    createdUTC
 )
