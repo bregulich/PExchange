@@ -12,15 +12,25 @@ import io.reactivex.Observable
 
 import javax.inject.Inject
 
+interface Updatable {
+    fun update(): Completable
+}
+
+interface UpdateDelegate {
+    fun delegateUpdates(updatable: Updatable): Completable
+}
+
 class CurrencyRepository @Inject constructor(
     private val remoteDataSource: RemoteCurrencyDataSource,
-    private val localDataSource: LocalCurrencyDataSource
-) : CurrencySource {
+    private val localDataSource: LocalCurrencyDataSource,
+    updater: UpdateDelegate
+) : CurrencySource, Updatable {
 
-    override fun getCurrencyHistory(
-        baseCurrency: Currency,
-        quoteCurrency: Currency
-    ): Observable<out Result<List<HistoricalCurrencyPair>>> =
+    init {
+        updater.delegateUpdates(this)
+    }
+
+    override fun update() =
         remoteDataSource
             .fetch()
             .flatMapCompletable {
@@ -31,6 +41,12 @@ class CurrencyRepository @Inject constructor(
                 }
             }
             .onErrorResumeNext { Completable.complete() }
+
+    override fun getCurrencyHistory(
+        baseCurrency: Currency,
+        quoteCurrency: Currency
+    ): Observable<out Result<List<HistoricalCurrencyPair>>> =
+        update()
             .andThen(localDataSource.getItemsInHistoricalOrder(baseCurrency, quoteCurrency))
 
     override fun getCurrencyPair(baseCurrency: Currency, quoteCurrency: Currency) =

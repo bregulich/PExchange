@@ -4,6 +4,8 @@ import com.bokugan.pexchange.db.LocalCurrencyDataSourceImpl
 import com.bokugan.pexchange.interfaceadapters.repositories.CurrencyRepository
 import com.bokugan.pexchange.interfaceadapters.repositories.LocalCurrencyDataSource
 import com.bokugan.pexchange.interfaceadapters.repositories.RemoteCurrencyDataSource
+import com.bokugan.pexchange.interfaceadapters.repositories.UpdateDelegate
+import com.bokugan.pexchange.repositoryupdater.WorkManagerUpdater
 import com.bokugan.pexchange.usecases.boundaries.CurrencySource
 import com.bokugan.pexchange.web.RemoteCurrencyDataSourceImpl
 import dagger.Binds
@@ -27,4 +29,9 @@ abstract class RepoModule {
     abstract fun bindLocalDataSource(
         data: LocalCurrencyDataSourceImpl
     ): LocalCurrencyDataSource
+
+    @Binds
+    abstract fun bindUpdateDelegate(
+        updater: WorkManagerUpdater
+    ): UpdateDelegate
 }
