@@ -15,8 +15,6 @@
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="56dp"
-            app:expandedTitleMarginStart="40dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
             app:expandedTitleTextAppearance="@style/AppBarExpanded"
             app:collapsedTitleTextAppearance="@style/AppBarCollapsed"
@@ -25,7 +23,8 @@
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/chart"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:layout_marginBottom="?attr/actionBarSize"/>
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"

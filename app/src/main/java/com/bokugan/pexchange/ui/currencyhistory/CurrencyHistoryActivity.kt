@@ -5,13 +5,15 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
 import com.bokugan.pexchange.R
-
 import com.bokugan.pexchange.databinding.ActivityCurrencyHistoryBinding
-
 import com.bokugan.pexchange.extensions.baseQuote
 import com.bokugan.pexchange.extensions.buySell
 import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class CurrencyHistoryActivity : AppCompatActivity() {
@@ -36,6 +38,8 @@ class CurrencyHistoryActivity : AppCompatActivity() {
             adapter = currencyPairAdapter
         }
 
+        binding.chart.legend.isEnabled = false
+
         vm.currencyHistory.observe(this) {
             updateChart(it)
             updateRecyclerView(it)
@@ -47,7 +51,17 @@ class CurrencyHistoryActivity : AppCompatActivity() {
     }
 
     private fun updateChart(list: List<HistoricalCurrencyPair>) {
+        val entries = mutableListOf<Entry>()
+        for (idx in list.indices) {
+            val item = list[idx]
+            entries.add(Entry(idx.toFloat(), item.buy.toFloat(), item))
+        }
 
+        val lineData = LineData(LineDataSet(entries, ""))
+        with(binding.chart) {
+            data = lineData
+            invalidate()
+        }
     }
 
     private fun updateRecyclerView(list: List<HistoricalCurrencyPair>) {
