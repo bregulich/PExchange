@@ -18,7 +18,7 @@ data class CurrencyHistoryRequest(
     val quoteCurrency: Currency
 )
 
-data class ConvertCurrencyRequest(
+class ConvertCurrencyRequest(
     val baseCurrency: Currency,
     val quoteCurrency: Currency
 )
