@@ -4,9 +4,12 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
+import com.bokugan.pexchange.R
 
 import com.bokugan.pexchange.databinding.ActivityCurrencyHistoryBinding
-import com.bokugan.pexchange.entities.CurrencyPair
+
+import com.bokugan.pexchange.extensions.baseQuote
+import com.bokugan.pexchange.extensions.buySell
 import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -51,7 +54,12 @@ class CurrencyHistoryActivity : AppCompatActivity() {
         currencyPairAdapter.data = list
     }
 
-    private fun updateToolbarTitle(currencyPair: CurrencyPair?) {
-
+    private fun updateToolbarTitle(currencyPair: HistoricalCurrencyPair?) {
+        binding.collapsingToolbarLayout.title =
+            if (currencyPair == null) {
+                resources.getString(R.string.n_a)
+            } else {
+                "${currencyPair.baseQuote} ${currencyPair.buySell}"
+            }
     }
 }

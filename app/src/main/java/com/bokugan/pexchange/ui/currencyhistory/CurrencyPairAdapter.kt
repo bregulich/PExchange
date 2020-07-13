@@ -5,11 +5,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bokugan.pexchange.databinding.CurrencyPairItemBinding
-import com.bokugan.pexchange.extensions.round
+import com.bokugan.pexchange.extensions.baseQuote
+import com.bokugan.pexchange.extensions.buySell
+import com.bokugan.pexchange.extensions.localDateTime
 import com.bokugan.pexchange.usecases.HistoricalCurrencyPair
-import java.text.DateFormat
-import java.text.DateFormat.getDateTimeInstance
-import java.util.*
 
 class CurrencyPairAdapter() : RecyclerView.Adapter<CurrencyPairViewHolder>() {
 
@@ -45,20 +44,9 @@ class CurrencyPairViewHolder(private val binding: CurrencyPairItemBinding) :
     fun update(currencyPairItem: HistoricalCurrencyPair) {
         // TODO. ViewModel (Rx/Transformations) work.
         with(binding) {
-            date.text = currencyPairItem.toLocalDateTime()
-            currencyPair.text = currencyPairItem.baseQuote()
-            buySell.text = currencyPairItem.buySell()
+            date.text = currencyPairItem.localDateTime
+            currencyPair.text = currencyPairItem.baseQuote
+            buySell.text = currencyPairItem.buySell
         }
-    }
-
-    companion object {
-        private val formatter = getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT)
-
-        private fun HistoricalCurrencyPair.toLocalDateTime() =
-            formatter.format(Date(createdUTC))
-
-        private fun HistoricalCurrencyPair.baseQuote() = "$baseCurrency/$quoteCurrency"
-
-        private fun HistoricalCurrencyPair.buySell() = "${buy.round()}/${sell.round()}"
     }
 }
