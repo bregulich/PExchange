@@ -42,7 +42,7 @@ class WorkManagerUpdater @Inject constructor(
 }
 
 class RxUpdater @WorkerInject constructor(
-    @Assisted @ApplicationContext context: Context,
+    @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val updatable: Updatable
 ) :
