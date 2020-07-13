@@ -14,11 +14,8 @@ class CurrencyPairAdapter() : RecyclerView.Adapter<CurrencyPairViewHolder>() {
 
     var data: List<HistoricalCurrencyPair> = emptyList()
         set(value) {
-            field = value ?: emptyList()
+            field = value
             notifyDataSetChanged()
-        }
-        get() {
-            return field ?: emptyList()
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =

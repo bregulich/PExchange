@@ -3,5 +3,5 @@
     <string name="n_a">n/a</string>
     <string name="pick_currencies">Pick currencies</string>
     <string name="ok">OK</string>
-
+    <string name="convert_currency">Convert currency</string>
 </resources>

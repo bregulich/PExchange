@@ -18,6 +18,11 @@ data class CurrencyHistoryRequest(
     val quoteCurrency: Currency
 )
 
+data class ConvertCurrencyRequest(
+    val baseCurrency: Currency,
+    val quoteCurrency: Currency
+)
+
 class CurrencyHistoryViewModel @ViewModelInject constructor(
     private val getCurrencyHistory: GetCurrencyHistory
 ) : ViewModel() {
@@ -69,6 +74,18 @@ class CurrencyHistoryViewModel @ViewModelInject constructor(
     fun requestNewCurrencyPair() {
         _pickCurrencyPairRequest.value = Event(
             CurrencyHistoryRequest(baseCurrency, quoteCurrency)
+        )
+    }
+
+    private val _convertCurrencyRequest =
+        MutableLiveData<Event<ConvertCurrencyRequest>>(null)
+
+    val convertCurrencyRequest: LiveData<Event<ConvertCurrencyRequest>> =
+        _convertCurrencyRequest
+
+    fun requestConvertCurrency() {
+        _convertCurrencyRequest.value = Event(
+            ConvertCurrencyRequest(baseCurrency, quoteCurrency)
         )
     }
 

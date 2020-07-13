@@ -3,9 +3,11 @@ package com.bokugan.pexchange.ui.currencyhistory
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.observe
+
 import com.bokugan.pexchange.R
 import com.bokugan.pexchange.databinding.ActivityCurrencyHistoryBinding
 import com.bokugan.pexchange.entities.Currency
@@ -19,6 +21,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import dagger.hilt.android.AndroidEntryPoint
 import com.bokugan.pexchange.extensions.observeEvent
+import com.bokugan.pexchange.ui.convertcurrency.ConvertCurrencyActivity
 
 
 @AndroidEntryPoint
@@ -37,8 +40,6 @@ class CurrencyHistoryActivity : AppCompatActivity(), CurrencyPickerCallback {
             .also { setContentView(it.root) }
 
         setSupportActionBar(binding.toolbar)
-
-        binding.toolbar.inflateMenu(R.menu.currency)
 
         currencyPairAdapter = CurrencyPairAdapter()
 
@@ -64,6 +65,12 @@ class CurrencyHistoryActivity : AppCompatActivity(), CurrencyPickerCallback {
                 it.quoteCurrency
             )
         }
+
+        vm.convertCurrencyRequest.observeEvent(this) {
+            ConvertCurrencyActivity.startActivity(
+                this, it.baseCurrency, it.quoteCurrency
+            )
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -76,6 +83,10 @@ class CurrencyHistoryActivity : AppCompatActivity(), CurrencyPickerCallback {
             R.id.pick_currencies -> vm.requestNewCurrencyPair()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    fun onConvertCurrencyClick(view: View) {
+        vm.requestConvertCurrency()
     }
 
     private fun updateChart(list: List<HistoricalCurrencyPair>) {

@@ -48,6 +48,7 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_sync_alt_24"
         android:layout_gravity="end|bottom"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        android:onClick="onConvertCurrencyClick"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
