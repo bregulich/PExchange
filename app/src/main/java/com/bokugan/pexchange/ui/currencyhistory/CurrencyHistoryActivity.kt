@@ -30,7 +30,6 @@ class CurrencyHistoryActivity : AppCompatActivity() {
         currencyPairAdapter = CurrencyPairAdapter()
 
         binding.recyclerView.apply {
-            setHasFixedSize(true)
             adapter = currencyPairAdapter
         }
 
